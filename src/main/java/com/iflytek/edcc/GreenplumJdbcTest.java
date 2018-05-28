@@ -21,9 +21,9 @@ public class GreenplumJdbcTest {
         Class.forName("com.pivotal.jdbc.GreenplumDriver");
         System.out.println("数据库连接");
         Connection db = DriverManager.getConnection(
-                "***",
-                "***",
-                "***");
+                "jdbc:pivotal:greenplum://192.168.151.164:6432;DatabaseName=edu_edcc",
+                "xrding",
+                "LgqYAsfLkxfCnNMr");
         System.out.println("数据库连接成功");
 
         Statement st = db.createStatement();
