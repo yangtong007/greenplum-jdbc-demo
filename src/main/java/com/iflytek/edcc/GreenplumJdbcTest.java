@@ -21,7 +21,7 @@ public class GreenplumJdbcTest {
         Class.forName("com.pivotal.jdbc.GreenplumDriver");
         System.out.println("数据库连接");
         Connection db = DriverManager.getConnection(
-                "jdbc:pivotal:greenplum://172.31.17.223:6432;DatabaseName=edu_edcc_dev",
+                "jdbc:pivotal:greenplum://172.31.17.223:6432;DatabaseName=edu_edcc",
                 "xrding",
                 "LgqYAsfLkxfCnNMr");
         System.out.println("数据库连接成功");
@@ -99,9 +99,45 @@ public class GreenplumJdbcTest {
      */
     private static void select(Statement st) throws Exception{
         ResultSet rs = st.executeQuery(
-                "SELECT * FROM test_gp_create_table " +
-                        "where statistics_date = '2018-04-30' " +
-                        "limit 100");
+                "SELECT \n" +
+                        "  knowledge_name AS knowledgeName,\n" +
+                        "  knowledge_code AS knowledgeCode,\n" +
+                        "  investigation_times AS inspectNum,\n" +
+                        "  avg_scoring_rate AS scoringRate \n" +
+                        "FROM\n" +
+                        "  (\n" +
+                        "    (SELECT \n" +
+                        "      * \n" +
+                        "    FROM\n" +
+                        "      zx_knowledge_point_detail_optimizations \n" +
+                        "    WHERE province_id = '1123' \n" +
+                        "      AND city_id = '1124' \n" +
+                        "      AND district_id = '1125' \n" +
+                        "      AND school_id = '99999' \n" +
+                        "      AND app_id = '1320' \n" +
+                        "      AND grade = '10' \n" +
+                        "      AND subject_code = '01' \n" +
+                        "      AND investigation_times > 0 \n" +
+                        "      AND is_leaf = '1') AS dataSets \n" +
+                        "    JOIN \n" +
+                        "      (SELECT \n" +
+                        "        MAX(statistics_date) AS statistics_date \n" +
+                        "      FROM\n" +
+                        "        zx_knowledge_point_detail_optimizations \n" +
+                        "      WHERE province_id = '1123' \n" +
+                        "      AND city_id = '1124' \n" +
+                        "      AND district_id = '1125' \n" +
+                        "      AND school_id = '99999' \n" +
+                        "      AND app_id = '1320' \n" +
+                        "      AND grade = '10' \n" +
+                        "      AND subject_code = '01'  \n" +
+                        "        AND investigation_times > 0 \n" +
+                        "        AND is_leaf = '1') AS laste_date \n" +
+                        "      ON laste_date.statistics_date = dataSets.statistics_date\n" +
+                        "  ) \n" +
+                        "ORDER BY inspectNum DESC,\n" +
+                        "  scoringRate ASC \n" +
+                        "LIMIT 10 OFFSET 0");
         while (rs.next()) {
             System.out.println(rs.getString(2));
         }
