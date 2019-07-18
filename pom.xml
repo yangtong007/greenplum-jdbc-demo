@@ -77,6 +77,8 @@
             <groupId>com.pivotal</groupId>
             <artifactId>greenplum</artifactId>
             <version>5.1.4</version>
+            <scope>system</scope>
+            <systemPath>D:\data\jars\maven\com\pivotal\greenplum\5.1.4\greenplum-5.1.4.jar</systemPath>
         </dependency>
 
     </dependencies>
